@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Get the list of jails
+jails=$(sudo fail2ban-client status | grep "Jail list" | sed -E 's/^[^:]+:[ \t]+//' | tr ',' ' ')
+
+# Loop through each jail to get banned IPs
+for jail in $jails; do
+  banned_ips=$(sudo fail2ban-client status $jail | grep "Banned IP list" | sed -E 's/^[^:]+:[ \t]+//')
+  if [ ! -z "$banned_ips" ]; then
+    echo "Jail: $jail"
+    echo "Banned IPs: $banned_ips"
+    echo "-------------------------"
+  fi
+done
